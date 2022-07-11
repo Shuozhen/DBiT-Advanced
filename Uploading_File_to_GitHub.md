@@ -30,6 +30,9 @@ git add ./scRNA-CNV
 git commit -m "%comments"
 ```
 - Correlates the local branch with the repository
+```
+git remote add origin git@github.com:Shuozhen/DBiT-Advanced.git
+```  
   - Check the existing remotes
   ```
   git remote -v
@@ -39,9 +42,6 @@ git commit -m "%comments"
   git remote set-url origin https://github.com/USERNAME/REPOSITORY.git
   ```
   - copy the SSH link under the repository
-  ```
-  git remote add origin git@github.com:Shuozhen/DBiT-Advanced.git
-  ```
 - Upload the file
 ```
 git push -u origin master
