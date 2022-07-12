@@ -1,0 +1,98 @@
+---
+title: "InferCNV"
+author: "Mingyu"
+date: "4/21/2022"
+---
+
+```{r}
+#if (!requireNamespace("BiocManager", quietly = TRUE))
+#     install.packages("BiocManager")
+#BiocManager::install("infercnv")
+#install.packages("tibble")
+#devtools::install_github("bmbroom/tsvio")
+#devtools::install_github("bmbroom/NGCHMR", ref="stable")
+#devtools::install_github("broadinstitute/inferCNV_NGCHM")
+
+## To save time:
+
+.libPaths("/gpfs/ysm/project/beng469/beng469_my393/R/4.1")
+```
+
+```{r}
+library(infercnv)
+```
+
+```{r}
+options(bitmapType='cairo')
+```
+
+```{r}
+annotation <- read.table("datasets/DCIS1_annotation.txt",header=F)
+gene <- read.table("datasets/gene.txt",header=F)
+```
+
+```{r Sample annotation file}
+head(annotation)
+```
+
+```{r Gene ordering file}
+head(gene)
+```
+
+
+```{r Create the InferCNV Object}
+infercnv_obj = CreateInfercnvObject(
+  raw_counts_matrix="datasets/GSM4476485_combined_UMIcount_CellTypes_DCIS1.txt",
+  annotations_file="datasets/DCIS1_annotation.txt",
+  delim="\t",
+  gene_order_file="datasets/gene.txt",
+  ref_group_names=c("stromal"))
+```
+```{r}
+?infercnv::run
+```
+
+
+## Running the full default analysis
+```{r, results="hide"}
+out_dir = "./infercnv_outputs"
+infercnv_obj_default = infercnv::run(
+    infercnv_obj,
+    cutoff=0.1, # cutoff=1 works well for Smart-seq2, and cutoff=0.1 works well for 10x Genomics
+    out_dir=out_dir,
+    num_threads = 8,
+    cluster_by_groups=TRUE, 
+    plot_steps=FALSE,
+    denoise=TRUE,
+    HMM=FALSE,
+    no_prelim_plot=TRUE,
+    png_res=60
+)
+```
+
+Basic ouput from running inferCNV.
+```{r, echo=FALSE}
+knitr::include_graphics(paste(out_dir, "infercnv.png", sep="/"))
+```
+
+```{r}
+# ?plot_cnv
+# rev(RColorBrewer::brewer.pal(n = 3, name = "RdBu"))
+```
+
+
+```{r}
+plot_cnv(infercnv_obj_default, 
+         out_dir = out_dir,
+         custom_color_pal = color.palette(c("#67A9CF","#F7F7F7","#EF8A62"),c(2,2)),
+         hclust_method='ward.D',
+         output_filename="infercnv_v2",
+         output_format="png",
+         png_res=60
+         )
+```
+
+
+```{r, echo=FALSE}
+knitr::include_graphics(paste(out_dir, "infercnv_v2.png", sep="/"))
+```
