@@ -12,4 +12,5 @@ SpatialDE/CopyKAT/InferCNV/PHATE/scanpy
 - Install the scanpy in the conda environment _spatialde_, I always have issue with classic conda install, so used mamba install instead
 ```
 mamba install scanpy
+mamba install leidenalg
 ```
